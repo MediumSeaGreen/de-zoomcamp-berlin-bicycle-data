@@ -1,8 +1,6 @@
 ---
-title: "Fahrradbarometer"
+title: "Fahrradbarometer Berlin"
 ---
-
-# Fahrradbarometer Berlin
 
 These visualizations present current cycling traffic data in Berlin, collected through automatic permanent counting stations and bicycle counters operated by the Senate Department for Mobility, Transport, Climate Protection, and Environment. Their purpose is to illustrate long-term developments in cycling, document seasonal fluctuations, and evaluate the effectiveness of infrastructure measures. Bicycle traffic data has been collected in Berlin since 1983, with automatic permanent counting stations complementing traditional manual counts since 2012.
 

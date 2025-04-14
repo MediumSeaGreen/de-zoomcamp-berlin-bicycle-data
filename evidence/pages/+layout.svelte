@@ -5,6 +5,6 @@
 	export let data;
 </script>
 
-<EvidenceDefaultLayout {data} hideSidebar=true title='Fahrradbarometer' neverShowQueries=true githubRepo='https://github.com/MediumSeaGreen/de-zoomcamp-berlin-bicycle-data'>
+<EvidenceDefaultLayout {data} hideSidebar=true title='Fahrradbarometer Berlin' neverShowQueries=true githubRepo='https://github.com/MediumSeaGreen/de-zoomcamp-berlin-bicycle-data'>
 	<slot slot="content" />
 </EvidenceDefaultLayout>
