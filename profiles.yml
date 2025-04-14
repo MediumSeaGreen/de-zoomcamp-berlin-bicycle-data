@@ -8,6 +8,7 @@ dbt_fahrradbarometer:
       method: service-account
       priority: interactive
       project: ${GOOGLE_PROJECT}
+      location: ${TF_VAR_location}
       threads: 8
       type: bigquery
   target: dev
