@@ -18,7 +18,8 @@ jobs:
           cache-dependency-path: evidence/package-lock.json
 
       - name: Install dependencies
-        run: cd evidence && npm install
+        working-directory: evidence
+        run: npm install
 
       - name: build
         env:
@@ -29,8 +30,8 @@ jobs:
           EVIDENCE_SOURCE__bigquery__client_email: ${{ secrets.EVIDENCE_SOURCE__bigquery__client_email }}
           EVIDENCE_SOURCE__bigquery__private_key: ${{ secrets.EVIDENCE_SOURCE__bigquery__private_key }}
           EVIDENCE_SOURCE__bigquery__project_id: ${{ secrets.EVIDENCE_SOURCE__bigquery__project_id }}
+        working-directory: evidence
         run: |
-          cd evidence
           npm run sources
           npm run build
 
