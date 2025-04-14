@@ -1,44 +1,55 @@
 import os
 import re
 import shutil
-from io import BytesIO
 import subprocess
+from io import BytesIO
 
 import pandas as pd
 import requests
 from constants import SRC_URL
-from prefect_gcp import GcpCredentials, GcsBucket, BigQueryWarehouse
+from helper import clean_col_name, df_to_parquet, jahresdatei_df_to_long
+from prefect_gcp import BigQueryWarehouse, GcpCredentials, GcsBucket
 
 from prefect import flow, task
 from prefect.logging import get_run_logger
-from helper import clean_col_name, df_to_parquet, jahresdatei_df_to_long
 
 
 @task
 def get_data():
+    """
+    Fetches data from the source URL defined in the constants module.
+
+    Returns:
+        BytesIO: The content of the fetched data as a BytesIO object.
+    """
     logger = get_run_logger()
-    logger.info(f"Get data from {SRC_URL}")
+    logger.info(f"Fetching data from {SRC_URL}")
     response = requests.get(SRC_URL)
     response.raise_for_status()
-
     return BytesIO(response.content)
 
 
 @task
 def xlsx_to_parquet(raw_data):
+    """
+    Transforms Excel data into Parquet format. Processes specific sheets
+    based on their names and applies transformations as needed.
+
+    Args:
+        raw_data (BytesIO): The raw Excel data to be processed.
+    """
     logger = get_run_logger()
-    logger.info("Transform xlsx to paraquet")
+    logger.info("Transforming Excel data to Parquet format")
 
     xls = pd.ExcelFile(raw_data)
     pattern = r"^Jahresdatei\s\d{4}$"
 
-    sheet_names = xls.sheet_names
-    for sheet_name in sheet_names:
+    for sheet_name in xls.sheet_names:
         if sheet_name == "Standortdaten":
             df = xls.parse(sheet_name)
             df.columns = [clean_col_name(col) for col in df.columns]
             df_to_parquet(df, sheet_name)
-        if re.match(pattern, sheet_name):
+        elif re.match(pattern, sheet_name):
             df = xls.parse(sheet_name)
             df.columns = [col.split()[0] for col in df.columns]
             df = jahresdatei_df_to_long(df)
@@ -48,8 +59,12 @@ def xlsx_to_parquet(raw_data):
 
 @task
 def upload_to_gcs():
+    """
+    Uploads the transformed Parquet files to a Google Cloud Storage bucket.
+    The bucket name and credentials are retrieved from environment variables.
+    """
     logger = get_run_logger()
-    logger.info("Upload data to gcs bucket")
+    logger.info("Uploading Parquet files to Google Cloud Storage")
 
     gcp_credentials = GcpCredentials(
         service_account_file=os.getenv("GOOGLE_CREDENTIALS")
@@ -63,8 +78,12 @@ def upload_to_gcs():
 
 @task
 def load_data_to_bq():
+    """
+    Loads data from Google Cloud Storage into BigQuery tables. The source URIs
+    and table names are retrieved from environment variables.
+    """
     logger = get_run_logger()
-    logger.info("Load data to BigQuery")
+    logger.info("Loading data into BigQuery")
 
     gcp_credentials = GcpCredentials(
         service_account_file=os.getenv("GOOGLE_CREDENTIALS")
@@ -78,7 +97,6 @@ def load_data_to_bq():
                 uris = {os.getenv("JAHRESDATEI_TABLE_SRC_URIS")}
             );
         """)
-
         warehouse.execute(f"""
         LOAD DATA OVERWRITE fahrradbarometer.standortdaten_fahrradbarometer
             FROM FILES (
@@ -88,11 +106,14 @@ def load_data_to_bq():
         """)
 
 
-
 @task
 def run_dbt():
+    """
+    Executes dbt (data build tool) transformations. Logs the output or errors
+    if the process fails.
+    """
     logger = get_run_logger()
-    logger.info("Run dbt")
+    logger.info("Running dbt transformations")
 
     try:
         result = subprocess.run(
@@ -111,19 +132,30 @@ def run_dbt():
 
 @flow(log_prints=True)
 def extract_data():
+    """
+    Main flow to orchestrate the data extraction, transformation, and loading process.
+    It performs the following steps:
+    1. Fetches raw data from the source.
+    2. Transforms the data into Parquet format.
+    3. Uploads the Parquet files to Google Cloud Storage.
+    4. Loads the data into BigQuery tables.
+    5. Runs dbt transformations.
+    """
     if not os.path.exists("parquet"):
         os.makedirs("parquet/standortdaten")
         os.makedirs("parquet/jahresdatei")
+
     raw_data = get_data()
     xlsx_to_parquet(raw_data)
     upload_to_gcs()
+
     if os.path.exists("parquet"):
         shutil.rmtree("parquet")
+
     load_data_to_bq()
     run_dbt()
 
 
-# Run the flow
 if __name__ == "__main__":
     extract_data()
     extract_data.serve()

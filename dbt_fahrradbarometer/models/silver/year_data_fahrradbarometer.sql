@@ -1,3 +1,10 @@
+/*
+This model processes yearly bicycle barometer data by:
+- Generating surrogate keys for counting stations and timestamps.
+- Filtering new data during incremental runs.
+- Preparing the data for downstream transformations in the silver layer.
+*/
+
 {{ config(
     unique_key=['counting_station_id', 'timestamp']
 ) }}

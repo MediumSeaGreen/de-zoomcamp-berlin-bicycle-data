@@ -1,5 +1,7 @@
 # 🚴 Berlin Bicycle Data Pipeline
 This project implements a modern end-to-end data pipeline that ingests, transforms, and visualizes public [bicycle traffic data from the city of Berlin](https://www.berlin.de/sen/uvk/mobilitaet-und-verkehr/verkehrsplanung/radverkehr/weitere-radinfrastruktur/zaehlstellen-und-fahrradbarometer/). It was developed as part of the DataTalksClub [Data Engineering Zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp) and demonstrates key data engineering concepts.
+
+👉 **Check out the dashboard here:** [Fahrradbarometer Berlin Dashboard](https://mediumseagreen.github.io/de-zoomcamp-berlin-bicycle-data/)
 ## 📊 About the Data
 The dataset used in this project comes from [Berlin’s official Fahrradbarometer](https://www.berlin.de/sen/uvk/mobilitaet-und-verkehr/verkehrsplanung/radverkehr/weitere-radinfrastruktur/zaehlstellen-und-fahrradbarometer/) program, which continuously measures bicycle traffic at various locations throughout the city. These automatic counting stations record the number of bicycles passing by every hour and have been collecting data for over a decade. The Berlin Senate Department provides this data publicly as yearly XLSX files, making it a regularly maintained open dataset.
 
@@ -25,6 +27,8 @@ The pipeline is built using the following tools and architecture:
 - Visualization: Data is visualized using [Evidence](https://evidence.dev), allowing users to explore trends and patterns in cycling activity.
 
 This project shows how publicly available government data can be turned into a usable data product using modern tools and best practices in data engineering. It is also easily extendable – for example by integrating weather data, or more interactive dashboards.
+
+👉 **Note:** More details about the setup and configuration of individual components can be found in the respective README files within their directories.
 ## ▶️ Run the project
 ### 1. Terraform
 #### Prerequisites

@@ -1,3 +1,11 @@
+/*
+This file defines the `dim_date` table, which serves as a date dimension in a star schema.
+The date dimension provides a structured way to analyze time-based data, enabling queries
+to group, filter, and aggregate data by various time attributes such as year, month, week,
+day, and hour. It is materialized incrementally to optimize performance and includes a 
+surrogate key for efficient joins with fact tables.
+*/
+
 {{ config(
     materialized='incremental',
     unique_key='timestamp'
