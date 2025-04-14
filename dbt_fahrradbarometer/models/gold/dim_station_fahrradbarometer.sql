@@ -1,0 +1,1 @@
+select * from {{ ref('station_data_fahrradbarometer') }}

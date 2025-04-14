@@ -1,0 +1,21 @@
+services:
+  prefect-server:
+    image: prefecthq/prefect:3-latest
+    container_name: prefect-server
+    ports:
+      - "4200:4200"
+    command: prefect server start --host 0.0.0.0
+  prefect-flow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: extract_data
+    env_file: .env
+    depends_on:
+      - prefect-server
+    volumes:
+      - ${GOOGLE_CREDENTIALS}:/secrets/credentials.json:ro
+    environment:
+      - GOOGLE_CREDENTIALS=/secrets/credentials.json
+      - GOOGLE_PROJECT=${GOOGLE_PROJECT}
+      - GOOGLE_REGION=${GOOGLE_REGION}

@@ -1,0 +1,1 @@
+select * from dbt_gold.dim_date

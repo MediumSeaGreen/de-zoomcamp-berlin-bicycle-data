@@ -1,0 +1,13 @@
+dbt_fahrradbarometer:
+  outputs:
+    dev:
+      dataset: dbt
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile: /secrets/credentials.json
+      method: service-account
+      priority: interactive
+      project: ${GOOGLE_PROJECT}
+      threads: 8
+      type: bigquery
+  target: dev

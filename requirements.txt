@@ -1,0 +1,6 @@
+prefect[gcp]
+pandas[excel, parquet]
+requests
+dbt-core
+dbt-bigquery
+google-cloud-bigquery-storage
