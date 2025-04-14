@@ -106,11 +106,4 @@ http://localhost:3000
 ##### Configuring BigQuery as a Data Source
 In the Evidence settings, you need to authorize access to BigQuery. Instructions for this can be found in the official documentation: [Evidence BigQuery Configuration](https://docs.evidence.dev/core-concepts/data-sources/bigquery)
 
-Once configured:
-- Stop the running Evidence server.
-- Run the following commands from the /evidence directory:
-```
-npm run sources
-npm run dev
-```
 This will load the data from BigQuery and your dashboards should now display the correct visualizations.
